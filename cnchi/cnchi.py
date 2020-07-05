@@ -3,7 +3,7 @@
 #
 #  cnchi.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2017 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -35,21 +35,20 @@ APP_NAME = 'cnchi'
 LOCALE_DIR = '/usr/share/locale'
 
 
-class CnchiApp(BaseObject):
-    """ Cnchi Installer """
+class CnchiApp(CnchiObject):
 
     TMP_PID_FILE = '/tmp/cnchi.pid'
 
-    def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
+    def __init__(self, name='cnchi_app', cmd_line=None, logger=None, *args, **kwargs):
         super().__init__(name=name, logger=logger, *args, **kwargs)
 
-        self.widget = App('Cnchi')
-
-        # self.widget.connect('activate', self.activate_cb)
+        self._initialize_settings()
 
         # Command line options
         self.cmd_line = cmd_line
         self.settings.cmd_line = cmd_line
+
+
 
     def _enumerate_settings(self, obj, address=''):
         excluded = ['_lock', '_initialized']
@@ -80,14 +79,14 @@ class CnchiApp(BaseObject):
 
         self._enumerate_settings(self.settings)
 
-    def _maybe_clear_webkit_data(self):
-        _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
-
-        for _dir in _dirs:
-            if os.path.exists(_dir) and 'development' == info.CNCHI_RELEASE_STAGE:
-                shutil.rmtree(_dir)
-
-            os.makedirs(_dir, 0o777, exist_ok=True)
+    # def _maybe_clear_webkit_data(self):
+    #     _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
+    #
+    #     for _dir in _dirs:
+    #         if os.path.exists(_dir) and 'development' == info.CNCHI_RELEASE_STAGE:
+    #             shutil.rmtree(_dir)
+    #
+    #         os.makedirs(_dir, 0o777, exist_ok=True)
 
     def _pre_activation_checks(self):
         can_activate = True

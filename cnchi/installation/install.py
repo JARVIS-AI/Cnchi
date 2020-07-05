@@ -741,7 +741,7 @@ class Installation(object):
     @staticmethod
     def change_user_password(user, new_password):
         """ Changes the user's password """
-        shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
+        shadow_password = crypt.crypt(new_password, crypt.mksalt())
         chroot_call(['usermod', '-p', shadow_password, user])
 
     @staticmethod
@@ -777,9 +777,9 @@ class Installation(object):
                         antlines += '[antergos]\n'
                         antlines += 'SigLevel = PackageRequired\n'
                         antlines += 'Include = /etc/pacman.d/antergos-mirrorlist\n\n'
-                        
+
                         pacman_file.write(antlines)
-                    
+
                     pacman_file.write(pacline)
         else:
             logging.warning("Can't find pacman configuration file")
@@ -1026,6 +1026,7 @@ class Installation(object):
         """ Set vconsole.conf for console keymap """
         match = {
             "ca": "us",
+            "br": "br-abnt2",
             "gb": "uk",
             "latam": "la-latin1",
             "pt": "pt-latin1"
